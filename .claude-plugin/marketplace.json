@@ -1,0 +1,17 @@
+{
+  "name": "blackboard-mcp",
+  "owner": {
+    "name": "bolgerru"
+  },
+  "metadata": {
+    "description": "Blackboard deadline tracker for Trinity College Dublin students"
+  },
+  "plugins": [
+    {
+      "name": "blackboard-mcp",
+      "source": "./",
+      "description": "Read-only Blackboard access for TCD students, a week-by-week deadline tracker, Google Calendar sync and a daily check.",
+      "version": "1.0.0"
+    }
+  ]
+}

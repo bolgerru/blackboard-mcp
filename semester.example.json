@@ -1,0 +1,6 @@
+{
+  "name": "Semester 1 (Michaelmas) 2026/27",
+  "modules": ["ECU33051", "ECU33021", "CSU33012"],
+  "nextSemester": ["ECU33052", "ECU33022", "CSU33013"],
+  "note": "Copied to ~/.blackboard-mcp/semester.json by the setup skill. Only `modules` are scanned and tracked. Use module codes without the year suffix."
+}

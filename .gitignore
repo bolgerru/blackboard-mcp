@@ -1,0 +1,11 @@
+node_modules/
+
+# Personal data never belongs in the repo. It lives in ~/.blackboard-mcp, but just in case:
+data/
+semester.json
+tracker.json
+NOTES.md
+session.json
+browser-profile/
+*.log
+.env

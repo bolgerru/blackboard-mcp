@@ -1,0 +1,28 @@
+{
+  "name": "blackboard-mcp",
+  "version": "1.0.0",
+  "description": "Claude plugin for Trinity College Dublin students: read-only Blackboard access, a week-by-week deadline tracker, Google Calendar sync and a daily check.",
+  "type": "module",
+  "private": true,
+  "main": "src/server.mjs",
+  "bin": {
+    "blackboard-mcp": "bin/start.mjs"
+  },
+  "scripts": {
+    "start": "node bin/start.mjs",
+    "login": "node src/login-cli.mjs",
+    "scan": "node scripts/scan.mjs",
+    "verify": "node scripts/verify-tracker.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "repository": "github:bolgerru/blackboard-mcp",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.1",
+    "officeparser": "^8.1.1",
+    "playwright-core": "^1.64.1",
+    "zod": "^4.6.7"
+  }
+}
