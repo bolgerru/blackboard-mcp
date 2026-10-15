@@ -76,7 +76,7 @@ input[type="checkbox"] { width: 16px; height: 16px; margin: 0; accent-color: var
 .group:first-child { border-top: 0; }
 .group h2 { margin: 0; font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
 .group h2 .n { font-family: var(--mono); font-size: 13px; font-weight: 400; color: var(--muted); margin-left: 8px; }
-.group.overdue h2 { color: var(--bad); }
+.group.g-overdue h2 { color: var(--bad); }
 
 /* One deadline */
 .item { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr) auto; gap: 4px 24px; align-items: start; }
@@ -298,7 +298,7 @@ input[type="checkbox"] { width: 16px; height: 16px; margin: 0; accent-color: var
     for (const [key, label] of GROUPS) {
       const rows = shown.filter((i) => groupOf(i, now) === key).sort((a, b) => (Date.parse(a.due) || Infinity) - (Date.parse(b.due) || Infinity));
       if (!rows.length) continue;
-      const sec = el("section", "group " + key);
+      const sec = el("section", "group g-" + key); // prefixed: a bare "week" class would pick up the week-row layout
       const h = el("h2", null, label); h.append(el("span", "n", String(rows.length)));
       sec.append(h);
       rows.forEach((it) => sec.append(renderItem(it, now)));
