@@ -57,37 +57,61 @@ function requireBaseUrl() {
 
 // ---------- login ----------
 
+/**
+ * Installed Chromium browsers usable for the sign-in window, in order of preference:
+ * [{ channel: "msedge" | "chrome", executablePath }]. Edge first on Windows (built in), Chrome first on
+ * macOS (more common there). Covers per-user installs (e.g. ~/Applications on a Mac), which
+ * Playwright's own channel lookup misses.
+ */
+export function installedBrowsers() {
+  const pf = [process.env["ProgramFiles"], process.env["ProgramFiles(x86)"], process.env.LOCALAPPDATA].filter(Boolean);
+  const macApp = (name) => ["/Applications", path.join(os.homedir(), "Applications")].map((d) => path.join(d, `${name}.app`, "Contents", "MacOS", name));
+  const candidates = {
+    win32: [
+      ["msedge", pf.map((p) => path.join(p, "Microsoft", "Edge", "Application", "msedge.exe"))],
+      ["chrome", pf.map((p) => path.join(p, "Google", "Chrome", "Application", "chrome.exe"))],
+    ],
+    darwin: [
+      ["chrome", macApp("Google Chrome")],
+      ["msedge", macApp("Microsoft Edge")],
+    ],
+    linux: [
+      ["chrome", ["/opt/google/chrome/chrome", "/usr/bin/google-chrome"]],
+      ["msedge", ["/opt/microsoft/msedge/msedge", "/usr/bin/microsoft-edge"]],
+    ],
+  }[process.platform] || [];
+  const found = [];
+  for (const [channel, paths] of candidates) {
+    const executablePath = paths.find((p) => fs.existsSync(p));
+    if (executablePath) found.push({ channel, executablePath });
+  }
+  if (process.env.BB_BROWSER) found.sort((a, b) => (a.channel === process.env.BB_BROWSER ? -1 : b.channel === process.env.BB_BROWSER ? 1 : 0));
+  return found;
+}
+
 /** Which installed browser the sign-in window will use ("msedge", "chrome"), or null if neither is found. */
 export function findBrowser() {
-  if (process.env.BB_BROWSER) return process.env.BB_BROWSER;
-  const pf = [process.env["ProgramFiles"], process.env["ProgramFiles(x86)"], process.env.LOCALAPPDATA].filter(Boolean);
-  const candidates = {
-    win32: {
-      msedge: pf.map((p) => path.join(p, "Microsoft", "Edge", "Application", "msedge.exe")),
-      chrome: pf.map((p) => path.join(p, "Google", "Chrome", "Application", "chrome.exe")),
-    },
-    darwin: {
-      msedge: ["/Applications/Microsoft Edge.app", path.join(os.homedir(), "Applications/Microsoft Edge.app")],
-      chrome: ["/Applications/Google Chrome.app", path.join(os.homedir(), "Applications/Google Chrome.app")],
-    },
-    linux: { msedge: ["/opt/microsoft/msedge/msedge", "/usr/bin/microsoft-edge"], chrome: ["/opt/google/chrome/chrome", "/usr/bin/google-chrome"] },
-  }[process.platform] || {};
-  for (const channel of ["msedge", "chrome"]) if ((candidates[channel] || []).some((p) => fs.existsSync(p))) return channel;
-  return null;
+  return installedBrowsers()[0]?.channel ?? null;
 }
 
 async function launchBrowser({ headless = false } = {}) {
   const opts = { headless, viewport: null, args: ["--no-first-run"] };
-  const channels = process.env.BB_BROWSER ? [process.env.BB_BROWSER] : ["msedge", "chrome"];
+  const found = installedBrowsers();
+  // Launch by exact path when we found one; otherwise let Playwright try its standard locations.
+  const attempts = found.length ? found.map((b) => ({ executablePath: b.executablePath })) : [{ channel: "msedge" }, { channel: "chrome" }];
   let lastErr;
-  for (const channel of channels) {
+  for (const how of attempts) {
     try {
-      return await chromium.launchPersistentContext(PROFILE_DIR, { ...opts, channel });
+      return await chromium.launchPersistentContext(PROFILE_DIR, { ...opts, ...how });
     } catch (e) {
       lastErr = e;
     }
   }
-  throw new Error(`Couldn't open Edge or Chrome for login: ${lastErr?.message}`);
+  throw new Error(
+    found.length
+      ? `Couldn't open ${found.map((b) => b.channel).join(" or ")} for the Blackboard sign-in: ${lastErr?.message}`
+      : "No Chrome or Microsoft Edge found for the Blackboard sign-in window. Install Google Chrome (https://www.google.com/chrome/) and try again."
+  );
 }
 
 /**

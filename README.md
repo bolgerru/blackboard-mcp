@@ -17,7 +17,7 @@ It connects Claude to your TCD Blackboard (read-only, with your own login) and r
 ## What you need
 
 - The **Claude desktop app** for Windows or macOS (https://claude.ai/download)
-- **Microsoft Edge** (built into Windows) **or Google Chrome**, used only for the Blackboard sign-in window
+- **Microsoft Edge** (built into Windows) **or Google Chrome**, used only for the Blackboard sign-in window. On a Mac, Safari won't work, so install [Chrome](https://www.google.com/chrome/) if you don't have it.
 - A **TCD Blackboard** account
 - Optional: the **Google Calendar** connector in Claude, for calendar sync
 

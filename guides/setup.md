@@ -7,7 +7,7 @@ Everything happens through the Blackboard tools. Never ask the student to open a
 ## 1. Check the basics
 
 Call `blackboard_status`.
-- It needs Microsoft Edge (built into Windows) or Google Chrome for the sign-in window. If `browser` says neither was found, ask them to install Chrome (https://www.google.com/chrome/), then continue.
+- It needs Microsoft Edge (built into Windows) or Google Chrome for the sign-in window. Safari can't be used, so most Mac users need Chrome. If `browser` says neither was found, ask them to install Chrome (https://www.google.com/chrome/), then continue. They don't need to use it day to day: it only opens for signing in.
 - If `semester` and `tracker` are already set, setup was done before: ask whether they want to redo it or switch semester (see the end).
 
 ## 2. Sign in to Blackboard

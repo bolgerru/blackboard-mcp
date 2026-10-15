@@ -11,7 +11,7 @@
       "name": "blackboard-mcp",
       "source": "./",
       "description": "Read-only Blackboard access for TCD students, a week-by-week deadline tracker, Google Calendar sync and a daily check.",
-      "version": "1.1.0"
+      "version": "1.1.1"
     }
   ]
 }
