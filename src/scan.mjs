@@ -48,6 +48,7 @@ export function embeddedFiles(html) {
  * Resolves to { scannedAt, firstRun, courses, changes, problems }; throws NotLoggedInError if the login expired.
  */
 export async function runScan({ all = false, onProgress = () => {} } = {}) {
+  const startedAt = new Date().toISOString(); // anything posted after this moment may not have been seen
   const manifest = fs.existsSync(MANIFEST) ? JSON.parse(fs.readFileSync(MANIFEST, "utf8")) : {};
   const changes = [];
   const problems = [];
@@ -223,11 +224,14 @@ export async function runScan({ all = false, onProgress = () => {} } = {}) {
   } finally {
     saveManifest();
   }
-  return {
-    scannedAt: new Date().toISOString(),
+  const result = {
+    scannedAt: startedAt,
+    finishedAt: new Date().toISOString(),
     firstRun,
     courses: summary,
     changes: firstRun ? `${changes.length} (first scan: everything is new)` : changes,
     problems,
   };
+  fs.writeFileSync(path.join(WORK_DIR, "last-scan.json"), JSON.stringify(result, null, 2));
+  return result;
 }

@@ -2,7 +2,7 @@
   "manifest_version": "0.2",
   "name": "blackboard-mcp",
   "display_name": "Blackboard deadline tracker (TCD)",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Read-only access to your Trinity College Dublin Blackboard, plus a week-by-week deadline tracker, Google Calendar sync and a daily check.",
   "long_description": "Connects Claude to your TCD Blackboard with your own login (read-only). Claude reads every course page, slide deck, PDF, Word/Excel file, assignment instruction, announcement and gradebook item to find every deadline, including ones that only appear in outlines, slides or schedule pictures. It checks real submission status, builds a week-by-week tracker page for the whole term, can add everything to Google Calendar, and re-checks it every morning. After installing, open the Code tab and say \"Set up my Blackboard deadline tracker\". Unofficial student project, not affiliated with Trinity College Dublin or Anthology (Blackboard).",
   "author": {

@@ -59,7 +59,8 @@ Ids are stable slugs: `<coursecode>-<short-title>`, e.g. `ecu33011-problem-set-1
 
 ### `meta/status`: one document
 
-- `lastUpdated`, `coverage` ("6 modules, 210 documents read"), `summary` (2–3 sentences: overdue, next 3 days with what's NOT submitted, anything urgent), `changes` (short strings: what changed since the last run)
+- `lastUpdated`: when Blackboard was last checked **successfully** (the scan's start time, from `verify_tracker`'s `markChecked`). The page shows it as "Checked Blackboard", and the student relies on it meaning nothing newer is hidden. Update it after every successful check, even with no changes, and never after a failed one.
+- `coverage` ("6 modules, 210 documents read"), `summary` (2–3 sentences: overdue, next 3 days with what's NOT submitted, anything urgent), `changes` (short strings: what changed since the last run)
 - `term`: `{ name, weeks: [{label, name?, start, end?}] }`, e.g. `{label: "Week 7", name: "Study week", start: "2026-10-26"}`. These are the blocks the week view draws, from "Week 1" through study/reading week to "Revision week" and "Exams" (exams give an explicit `end`).
 - `keyDates`: `[{label, start, end?, note, kind?}]`. Entries without `kind` are periods (study week, exam period, a deadline week with no exact day) and also appear in the top "Key dates" strip while upcoming. `kind: "note"` entries are happenings shown inside their week: cancelled lectures, extensions, groups posted, releases, industrial action, exam-prep sessions. **Never delete past entries.** Students use the week view to look back.
 - `calendar`: `{ calendarId, studyWeekEventId, examPeriodEventId, … }`

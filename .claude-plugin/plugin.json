@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
   "name": "blackboard-mcp",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Connects Claude to your Trinity College Dublin Blackboard (read-only, with your own login). Builds a week-by-week deadline tracker from every course page, slide, PDF, announcement and gradebook item, syncs it to Google Calendar, and re-checks it every morning.",
   "author": {
     "name": "bolgerru"

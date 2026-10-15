@@ -14,7 +14,7 @@ Keep the student's deadline tracker exactly right: every deadline in this semest
 
 Call `scan_blackboard`. It starts the scan in the background and returns straight away. Then call `scan_status` every 30–60 seconds until `state` is `done` (a daily scan usually takes a few minutes). The result has `courses`, `changes` (new or updated items, files, announcements, gradebook items, due-date changes, "submission status changed", "grade released") and `problems`. If problems are network errors, call `scan_blackboard` again: it only re-fetches what's missing.
 
-If the state is `login_needed`, the session expired and silent re-login failed. In an interactive session, call `blackboard_login` (a window opens for the student to sign in) and scan again. In a scheduled run with nobody there, skip to step 5 with the existing data, and start the summary and rundown with: "Couldn't sign in to Blackboard. Open Claude and say 'log me into Blackboard', then I'll catch up."
+If the state is `login_needed`, the session expired and silent re-login failed. In an interactive session, call `blackboard_login` (a window opens for the student to sign in) and scan again. In a scheduled run with nobody there, skip to step 6 with the existing data: update only `summary` (starting with "Couldn't sign in to Blackboard, so this list may be out of date. Open Claude and say 'log me into Blackboard', then I'll catch up.") and **leave `lastUpdated` unchanged**, so the tracker's "Checked Blackboard" time honestly shows the last successful check. Start the rundown with the same sentence.
 
 ## 2. Find what changed
 
@@ -39,7 +39,9 @@ Save the rows with ArtifactData list (collection `deadlines`, limit 1000, `out_d
 
 ## 6. Status and notes
 
-`update` `meta/status` (with `if_version`): `lastUpdated`, `coverage`, `summary` (overdue, next 3 days saying clearly what's NOT submitted, anything urgent), `changes`. Append `keyDates` notes (`kind: "note"`) for cancellations, extensions, releases and notable announcements. Never remove past ones, and don't touch `term`. Add anything module-specific you learned with `save_settings` (`notes_append`).
+`update` `meta/status` (with `if_version`): `lastUpdated`, `coverage`, `summary` (overdue, next 3 days saying clearly what's NOT submitted, anything urgent), `changes`.
+
+**`lastUpdated` is the student's guarantee** that everything on Blackboard as of that time is on the tracker. Set it on **every** successful check, the morning run or one the student asks for during the day, even when nothing changed. Use exactly the `markChecked.lastUpdated` value that a passing `verify_tracker` returns (the time the scan started). Never set it from the clock, and never after a failed or partial check (expired login, scan errors you couldn't resolve, verification not passing). In those cases leave it alone and say what went wrong at the start of `summary`. Append `keyDates` notes (`kind: "note"`) for cancellations, extensions, releases and notable announcements. Never remove past ones, and don't touch `term`. Add anything module-specific you learned with `save_settings` (`notes_append`).
 
 ## 7. Rundown
 
