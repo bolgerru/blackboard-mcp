@@ -9,3 +9,6 @@ session.json
 browser-profile/
 *.log
 .env
+
+# Built desktop extension (attached to GitHub releases instead)
+dist/

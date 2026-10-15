@@ -1,0 +1,59 @@
+{
+  "manifest_version": "0.2",
+  "name": "blackboard-mcp",
+  "display_name": "Blackboard deadline tracker (TCD)",
+  "version": "1.1.0",
+  "description": "Read-only access to your Trinity College Dublin Blackboard, plus a week-by-week deadline tracker, Google Calendar sync and a daily check.",
+  "long_description": "Connects Claude to your TCD Blackboard with your own login (read-only). Claude reads every course page, slide deck, PDF, Word/Excel file, assignment instruction, announcement and gradebook item to find every deadline, including ones that only appear in outlines, slides or schedule pictures. It checks real submission status, builds a week-by-week tracker page for the whole term, can add everything to Google Calendar, and re-checks it every morning. After installing, open the Code tab and say \"Set up my Blackboard deadline tracker\". Unofficial student project, not affiliated with Trinity College Dublin or Anthology (Blackboard).",
+  "author": {
+    "name": "bolgerru",
+    "url": "https://github.com/bolgerru"
+  },
+  "homepage": "https://github.com/bolgerru/blackboard-mcp",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bolgerru/blackboard-mcp"
+  },
+  "support": "https://github.com/bolgerru/blackboard-mcp/issues",
+  "server": {
+    "type": "node",
+    "entry_point": "src/server.mjs",
+    "mcp_config": {
+      "command": "node",
+      "args": ["${__dirname}/src/server.mjs"],
+      "env": {}
+    }
+  },
+  "tools": [
+    { "name": "blackboard_login", "description": "Open a browser window so you can sign in to Blackboard yourself" },
+    { "name": "blackboard_status", "description": "Check the setup, settings, notes and login" },
+    { "name": "blackboard_guide", "description": "Step-by-step guides for setup and the daily check" },
+    { "name": "get_tracker_page", "description": "Copy the deadline tracker page so Claude can publish it for you" },
+    { "name": "save_settings", "description": "Save your modules, tracker settings and personal notes" },
+    { "name": "scan_blackboard", "description": "Scan all of this semester's modules in the background" },
+    { "name": "scan_status", "description": "Progress and results of the scan" },
+    { "name": "find_deadline_text", "description": "Everything deadline-related in one module" },
+    { "name": "extract_images", "description": "Show pictures inside course files, e.g. schedule tables" },
+    { "name": "verify_tracker", "description": "Check the tracker against Blackboard's real submission data" },
+    { "name": "list_courses", "description": "Your Blackboard courses" },
+    { "name": "get_due_items", "description": "Upcoming deadlines with real submission status" },
+    { "name": "get_timetable", "description": "Your class timetable" },
+    { "name": "list_course_content", "description": "Browse a course's folders and files" },
+    { "name": "get_content_item", "description": "Read one course item in full" },
+    { "name": "get_announcements", "description": "Recent announcements" },
+    { "name": "get_grades", "description": "Your grades and feedback" },
+    { "name": "blackboard_api_get", "description": "Read-only fallback for any Blackboard page" }
+  ],
+  "prompts": [
+    { "name": "setup", "description": "Set up my Blackboard deadline tracker", "text": "Set up my Blackboard deadline tracker. Call the Blackboard server's blackboard_guide tool with topic 'setup' and follow it." },
+    { "name": "daily-check", "description": "Check Blackboard and update my tracker", "text": "Run my daily Blackboard deadline check: call the Blackboard server's blackboard_guide tool with topic 'daily' and follow it exactly, then give me the short rundown." }
+  ],
+  "keywords": ["blackboard", "tcd", "trinity college dublin", "deadlines", "students", "calendar"],
+  "license": "UNLICENSED",
+  "compatibility": {
+    "platforms": ["win32", "darwin"],
+    "runtimes": {
+      "node": ">=18.0.0"
+    }
+  }
+}

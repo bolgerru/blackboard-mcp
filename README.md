@@ -1,6 +1,6 @@
 # blackboard-mcp
 
-**A Claude plugin that keeps Trinity College Dublin students on top of their deadlines.**
+**A Claude desktop extension that keeps Trinity College Dublin students on top of their deadlines.**
 
 It connects Claude to your TCD Blackboard (read-only, with your own login) and reads *everything* in your modules: course pages, slide decks, PDFs, Word docs, assignment instructions, announcements, the gradebook and lecturers' own module websites. Many deadlines only appear in a module outline or a slide, never in the Blackboard calendar. Claude finds them, builds a week-by-week deadline tracker for the whole term, can put every deadline on your Google Calendar with the details, and re-checks it all every morning.
 
@@ -14,26 +14,22 @@ It connects Claude to your TCD Blackboard (read-only, with your own login) and r
 - **Google Calendar (optional):** every deadline as an event with reminders and a full description; midterms and assessed tutorials in their real time slots.
 - **A daily check:** each morning it rescans, updates the tracker and calendar, verifies every status against Blackboard, and gives you a short rundown.
 
-## Requirements
+## What you need
 
-- **Claude desktop app** (Claude Code) on Windows or macOS. The tracker page and the daily schedule use the desktop app's Artifacts and scheduled tasks. The Blackboard tools also work in the Claude Code CLI.
-- **Node.js 18+**: https://nodejs.org (LTS)
-- **Microsoft Edge or Google Chrome**, used only for the sign-in window
+- The **Claude desktop app** for Windows or macOS (https://claude.ai/download)
+- **Microsoft Edge** (built into Windows) **or Google Chrome**, used only for the Blackboard sign-in window
 - A **TCD Blackboard** account
-- Optional: the **Google Calendar** connector in Claude
+- Optional: the **Google Calendar** connector in Claude, for calendar sync
+
+No git, Node.js or terminal is needed: Claude runs the extension with its own built-in Node.
 
 ## Install
 
-In Claude Code, run:
+1. Download **[blackboard-mcp.mcpb](https://github.com/bolgerru/blackboard-mcp/releases/latest/download/blackboard-mcp.mcpb)** from the latest release (about 7 MB).
+2. Double-click it. Claude opens and asks you to install the extension, so click **Install**. (Or drag the file onto Claude's **Settings → Extensions** page.)
+3. Open the **Code** tab in Claude and say:
 
-```text
-/plugin marketplace add bolgerru/blackboard-mcp
-/plugin install blackboard-mcp@blackboard-mcp
-```
-
-Restart Claude (the first start installs the plugin's packages, about a minute), then say:
-
-> **Set up my Blackboard deadline tracker**
+   > **Set up my Blackboard deadline tracker**
 
 Claude walks you through it:
 
@@ -45,6 +41,8 @@ Claude walks you through it:
 6. It schedules the daily check at a time you choose.
 
 After that, the daily check runs on its own, or you can say **"check Blackboard"** any time.
+
+To update, download the newest `.mcpb` and install it the same way. Your settings and login are kept.
 
 ## Day to day
 
@@ -64,26 +62,31 @@ After that, the daily check runs on its own, or you can say **"check Blackboard"
 
 | Part | What it does |
 | --- | --- |
-| `src/server.mjs` | MCP server: `blackboard_login`, `blackboard_status`, `list_courses`, `get_due_items`, `get_timetable`, `list_course_content`, `get_content_item`, `get_announcements`, `get_grades`, `blackboard_api_get` |
-| `src/blackboard.mjs` | Reuses your browser login for read-only calls to Blackboard's REST API (the same calls the Blackboard website makes), with silent re-login. Submission status comes from your attempts. |
-| `scripts/scan.mjs` | Incremental full scan of this semester's modules into `~/.blackboard-mcp/data/corpus/`, including text from PPTX, PDF, DOCX and embedded pages |
-| `scripts/verify-tracker.mjs` | Cross-checks every tracker row against the scan (due dates, real submission status, untracked items) |
-| `scripts/grep-deadlines.sh`, `scripts/extract-images.mjs` | Help Claude find deadlines in text and in schedule tables that are images |
-| `tracker/deadline-tracker.html` | The tracker page (an Artifact with its own small database) |
-| `skills/blackboard-setup` | The one-time setup walkthrough |
-| `skills/blackboard-daily-check` | The daily routine, plus `reference.md` with every rule it follows |
+| `src/server.mjs` | The MCP server. It provides live Blackboard tools (`list_courses`, `get_due_items`, `get_content_item`, `get_announcements`, `get_grades`, `get_timetable`, …), scan tools (`scan_blackboard`, `scan_status`, `find_deadline_text`, `extract_images`, `verify_tracker`), and setup tools (`blackboard_login`, `blackboard_status`, `save_settings`, `get_tracker_page`, `blackboard_guide`). |
+| `src/blackboard.mjs` | Reuses your browser login for read-only calls to Blackboard's REST API (the same calls the Blackboard website makes), with silent re-login. Submission status comes from your attempts, not the gradebook label. |
+| `src/scan.mjs`, `src/extract.mjs` | Incremental scan of this semester's modules into `~/.blackboard-mcp/data/`, with text and images from PDF, PowerPoint, Word, Excel, OpenDocument and embedded pages |
+| `src/verify.mjs`, `src/corpus.mjs` | Cross-check the tracker against Blackboard, search for deadline text, and pull out schedule pictures |
+| `guides/` | The setup and daily-check instructions Claude follows, plus the reference with every rule (served by `blackboard_guide`) |
+| `tracker/deadline-tracker.html` | The tracker page (a private Artifact with its own small database) |
+| `manifest.json` | The desktop extension manifest. `npm run pack` builds `dist/blackboard-mcp.mcpb`. |
+| `.claude-plugin/`, `skills/`, `bin/` | The Claude Code plugin version (see below) |
 
 Settings: `BB_URL` (default `https://tcd.blackboard.com`), `BB_BROWSER` (`msedge` or `chrome`), `BB_DATA_DIR` (default `~/.blackboard-mcp`).
 
-## Without the plugin system
+## For Claude Code CLI users
 
-```bash
-git clone https://github.com/bolgerru/blackboard-mcp
-cd blackboard-mcp
-npm ci
-claude mcp add blackboard -s user -- node "$PWD/bin/start.mjs"
+If you use Claude Code in a terminal rather than the desktop app, install the plugin version instead. It needs git and Node.js 18+:
+
+```text
+/plugin marketplace add bolgerru/blackboard-mcp
+/plugin install blackboard-mcp@blackboard-mcp
 ```
 
-If you used this manual route, don't also install the plugin. You'd get two copies of the Blackboard tools.
+Restart Claude (the first start installs packages, about a minute), then say "Set up my Blackboard deadline tracker". Don't install both the extension and the plugin, or you'll get two copies of the Blackboard tools.
 
-Then copy the two folders in `skills/` into `~/.claude/skills/` and say "Set up my Blackboard deadline tracker".
+## Building the extension
+
+```bash
+npm ci
+npm run pack   # validates manifest.json and writes dist/blackboard-mcp.mcpb
+```

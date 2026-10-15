@@ -11,7 +11,7 @@ import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const needed = ["@modelcontextprotocol/sdk", "playwright-core", "officeparser", "zod"];
+const needed = ["@modelcontextprotocol/sdk", "playwright-core", "unpdf", "fflate", "zod"];
 const missing = needed.filter((p) => !fs.existsSync(path.join(root, "node_modules", p, "package.json")));
 
 if (missing.length) {

@@ -1,0 +1,15 @@
+# Only the server, its guides, the tracker page and production packages go into the .mcpb.
+# Rules start with "/" so they only match at the top level, never inside node_modules.
+/.git/
+/.gitattributes
+/.gitignore
+/.claude-plugin/
+/skills/
+/scripts/
+/bin/
+/dist/
+/data/
+/README.md
+/semester.example.json
+/package-lock.json
+/.mcpbignore

@@ -57,6 +57,25 @@ function requireBaseUrl() {
 
 // ---------- login ----------
 
+/** Which installed browser the sign-in window will use ("msedge", "chrome"), or null if neither is found. */
+export function findBrowser() {
+  if (process.env.BB_BROWSER) return process.env.BB_BROWSER;
+  const pf = [process.env["ProgramFiles"], process.env["ProgramFiles(x86)"], process.env.LOCALAPPDATA].filter(Boolean);
+  const candidates = {
+    win32: {
+      msedge: pf.map((p) => path.join(p, "Microsoft", "Edge", "Application", "msedge.exe")),
+      chrome: pf.map((p) => path.join(p, "Google", "Chrome", "Application", "chrome.exe")),
+    },
+    darwin: {
+      msedge: ["/Applications/Microsoft Edge.app", path.join(os.homedir(), "Applications/Microsoft Edge.app")],
+      chrome: ["/Applications/Google Chrome.app", path.join(os.homedir(), "Applications/Google Chrome.app")],
+    },
+    linux: { msedge: ["/opt/microsoft/msedge/msedge", "/usr/bin/microsoft-edge"], chrome: ["/opt/google/chrome/chrome", "/usr/bin/google-chrome"] },
+  }[process.platform] || {};
+  for (const channel of ["msedge", "chrome"]) if ((candidates[channel] || []).some((p) => fs.existsSync(p))) return channel;
+  return null;
+}
+
 async function launchBrowser({ headless = false } = {}) {
   const opts = { headless, viewport: null, args: ["--no-first-run"] };
   const channels = process.env.BB_BROWSER ? [process.env.BB_BROWSER] : ["msedge", "chrome"];
