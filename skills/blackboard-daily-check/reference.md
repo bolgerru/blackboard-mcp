@@ -2,9 +2,13 @@
 
 The rules the daily check and the setup follow. They were learned from real TCD Blackboard (Ultra) data, and several fix mistakes that actually happened.
 
+## Tool names
+
+The Blackboard tools are referred to by their short names (`blackboard_status`, `blackboard_login`, `list_courses`, `get_due_items`, `get_announcements`, `get_content_item`, `list_course_content`, `get_grades`, `get_timetable`, `blackboard_api_get`). Their full names depend on how the server was installed: `mcp__plugin_blackboard-mcp_blackboard__<tool>` for the plugin, or `mcp__blackboard__<tool>` if it was added by hand. Use whichever exists, and load them with ToolSearch (query `blackboard_status`) if they're deferred.
+
 ## Where things live
 
-Call `mcp__blackboard__blackboard_status` first. It returns:
+Call `blackboard_status` first. It returns:
 
 - `pluginDir` and `scripts.*`: the scan, verify, grep and image scripts, plus the tracker page template. Run the scripts with `node "<path>"` (or `bash "<path>"` for grep-deadlines.sh).
 - `dataDir` (`~/.blackboard-mcp`), the student's own folder, never shared:
@@ -62,7 +66,7 @@ Ids are stable slugs: `<coursecode>-<short-title>`, e.g. `ecu33011-problem-set-1
 
 ## Submission status: what's really submitted
 
-- **Use the attempts, never the grade label.** Blackboard's per-student grade record shows placeholder statuses ("NeedsGrading", even "Graded") for group assignments and some others before anyone has submitted. The truth is the student's attempts list. The scan writes it into `gradebook.json` as `submission` (`not_submitted` / `draft` / `submitted` / `graded`, plus `submittedAt`), and `mcp__blackboard__get_due_items` reports the same.
+- **Use the attempts, never the grade label.** Blackboard's per-student grade record shows placeholder statuses ("NeedsGrading", even "Graded") for group assignments and some others before anyone has submitted. The truth is the student's attempts list. The scan writes it into `gradebook.json` as `submission` (`not_submitted` / `draft` / `submitted` / `graded`, plus `submittedAt`), and `get_due_items` reports the same.
 - `draft` means saved but not submitted, so treat it as `not_submitted` and say so.
 - Rows without a gradebook item (exams, midterms, work submitted on GitLab or by email) can only be `submitted`/`graded` if the student says so. Otherwise use `unknown` or `in_person`.
 - Group assignments: one member submits for the group, and it then shows as an attempt for every member. No attempt means not submitted.

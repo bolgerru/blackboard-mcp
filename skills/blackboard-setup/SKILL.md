@@ -11,17 +11,17 @@ You're setting this up for a TCD student who may not be technical. Keep messages
 
 1. `node --version` must be 18 or newer. If Node is missing, tell them to install the LTS version from https://nodejs.org and restart Claude.
 2. A Chromium browser is needed for signing in: Microsoft Edge (built into Windows) or Google Chrome. On a Mac without Chrome, set the `BB_BROWSER` environment variable to `chrome` after installing Chrome.
-3. Call `mcp__blackboard__blackboard_status`.
+3. Call `blackboard_status`.
    - If the `blackboard` tools don't exist, the plugin's MCP server isn't running. Its first start installs packages, which can take a minute. Run `node "<plugin folder>/bin/start.mjs" --install-only` (the plugin folder is two levels above this skill's base directory), then ask them to restart Claude, or run `/mcp` and reconnect `blackboard`, and come back.
    - Note `pluginDir`, `scripts`, `dataDir` and `corpusDir` from the result for the later steps.
 
 ## 2. Sign in to Blackboard
 
-Tell them a browser window will open on TCD Blackboard. They sign in there themselves as usual (Microsoft/TCD login and two-factor), and the window closes on its own. Then call `mcp__blackboard__blackboard_login`. Never ask for or handle their password. The tools are read-only.
+Tell them a browser window will open on TCD Blackboard. They sign in there themselves as usual (Microsoft/TCD login and two-factor), and the window closes on its own. Then call `blackboard_login`. Never ask for or handle their password. The tools are read-only.
 
 ## 3. Choose this semester's modules
 
-Call `mcp__blackboard__list_courses` (current year). Ask which modules they're taking **this semester**, as a multi-select question. TCD modules usually come in A/B pairs or semester-specific codes, and a module with no content yet is often next semester, but let them decide. Write `<dataDir>/semester.json`:
+Call `list_courses` (current year). Ask which modules they're taking **this semester**, as a multi-select question. TCD modules usually come in A/B pairs or semester-specific codes, and a module with no content yet is often next semester, but let them decide. Write `<dataDir>/semester.json`:
 
 ```json
 { "name": "Semester 1 (Michaelmas) 2026/27", "modules": ["ECU33051", "CSU33012"], "nextSemester": ["ECU33052"] }

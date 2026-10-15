@@ -11,7 +11,7 @@ Keep the student's deadline tracker exactly right: every deadline in this semest
 
 ## 0. Orient
 
-1. Call `mcp__blackboard__blackboard_status`. It gives `pluginDir`, the script paths, `dataDir`, `corpusDir`, `semester`, `tracker` and `notesFile`, and whether the login works.
+1. Call `blackboard_status`. It gives `pluginDir`, the script paths, `dataDir`, `corpusDir`, `semester`, `tracker` and `notesFile`, and whether the login works.
    - If `semester` or `tracker` is missing, setup hasn't been done. Use the `blackboard-setup` skill instead.
    - If the `blackboard` tools aren't available at all, tell the student the Blackboard server isn't connected and that they can restart Claude or check `/mcp`.
 2. Read `notesFile` (the student's NOTES.md). It has their groups, module websites and per-module quirks.
@@ -21,13 +21,13 @@ Keep the student's deadline tracker exactly right: every deadline in this semest
 
 Run `node "<scripts.scan>"` and give it up to 15 minutes (run it in the background and wait if needed). It prints JSON: `courses`, `changes` (new or updated items, files, announcements, gradebook items, due-date changes, "submission status changed", "grade released") and `problems`. If problems are network errors, run it again: it only re-fetches what's missing.
 
-If it reports a login error, the session expired and silent re-login failed. In an interactive session, call `mcp__blackboard__blackboard_login` (a window opens for the student to sign in) and rescan. In a scheduled run with nobody there, skip to step 5 with the existing data, and start the summary and rundown with: "Couldn't sign in to Blackboard. Open Claude and say 'log me into Blackboard', then I'll catch up."
+If it reports a login error, the session expired and silent re-login failed. In an interactive session, call `blackboard_login` (a window opens for the student to sign in) and rescan. In a scheduled run with nobody there, skip to step 5 with the existing data, and start the summary and rundown with: "Couldn't sign in to Blackboard. Open Claude and say 'log me into Blackboard', then I'll catch up."
 
 ## 2. Find what changed
 
 For every entry in `changes`, open the relevant record in `<corpusDir>/<course>/` (the content.json item including its `instructions`, the announcement, or `files/*.txt`) and look for anything deadline-related: new or moved dates, extensions, new assignments, quizzes, tests, presentations, weightings, submission instructions, cancellations, groups, exam timetables. Follow "Finding deadlines that aren't in the gradebook" in reference.md, including the image check for schedules and fetching every module website listed in NOTES.md.
 
-Then call `mcp__blackboard__get_due_items` with `days_ahead` 110 and `days_overdue` 30 for current submission statuses.
+Then call `get_due_items` with `days_ahead` 110 and `days_overdue` 30 for current submission statuses.
 
 ## 3. Update the tracker
 

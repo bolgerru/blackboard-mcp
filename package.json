@@ -1,6 +1,6 @@
 {
   "name": "blackboard-mcp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Claude plugin for Trinity College Dublin students: read-only Blackboard access, a week-by-week deadline tracker, Google Calendar sync and a daily check.",
   "type": "module",
   "private": true,

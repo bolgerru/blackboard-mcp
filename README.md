@@ -84,4 +84,6 @@ npm ci
 claude mcp add blackboard -s user -- node "$PWD/bin/start.mjs"
 ```
 
+If you used this manual route, don't also install the plugin. You'd get two copies of the Blackboard tools.
+
 Then copy the two folders in `skills/` into `~/.claude/skills/` and say "Set up my Blackboard deadline tracker".
